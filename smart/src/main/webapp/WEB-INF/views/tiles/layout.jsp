@@ -15,7 +15,13 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href= "<c:url value='/css/styles.css'/>" rel="stylesheet" />
         <link href= "<c:url value='/css/common.css'/>" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+ 
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+   <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script> 
+   <script src="<c:url value='/js/common.js'/>"></script>
     </head>
+    
     <body>
         <div class="d-flex" id="wrapper">
             <!-- Sidebar-->
@@ -27,7 +33,7 @@
                     <a class="${category == 'cu' ? 'active' : '' } list-group-item list-group-item-action list-group-item-light p-3 ps-4"
                      href="<c:url value='/customer/list"'/>">고객관리</a>
                     <a class="${category eq 'hr' ? 'active' : '' } list-group-item list-group-item-action list-group-item-light p-3 ps-4" 
-                    href="<c:url value='hr/list"'/>">사원관리</a>
+                    href="<c:url value='/hr/list"'/>">사원관리</a>
                     <a class="${category eq 'no' ? 'active' : '' } list-group-item list-group-item-action list-group-item-light p-3 ps-4" 
                     href="<c:url value='/notice/list"'/>">공지사항</a>
                     <a class="${category eq 'bo' ? 'active' : '' } list-group-item list-group-item-action list-group-item-light p-3 ps-4" 
