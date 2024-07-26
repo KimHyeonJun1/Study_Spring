@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smart.member.MemberMapper">
+
+
+<!-- 테스트용 회원정보조회: 로그인, 내정보조회 -->
+<select id="getOneMember" resultType="member">
+select * from member where userid = #{userid}
+</select>
+
+<!-- 테스트용 회원정보 저장 -->
+<insert id="registerMemberForTest">
+insert into member(name, userid, userpw, email)
+values (#{name}, #{userid}, #{userpw}, #{email})
+</insert>
+
+
+</mapper>

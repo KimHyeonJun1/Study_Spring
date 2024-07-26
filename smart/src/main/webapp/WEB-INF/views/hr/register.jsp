@@ -61,7 +61,7 @@
 	<td>
 		<div class="row">
 			<div class="col-auto">
-				<input type="text" name="salary" class="form-control">
+				<input type="text" name="salary" value="3000" class="form-control">
 			</div>
 		</div>
 	</td>

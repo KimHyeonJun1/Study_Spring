@@ -37,6 +37,13 @@
     <artifactId>jstl</artifactId>  
 </dependency>
 	
+	<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+	
 	<!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-jasper -->
 <!-- spring boot는 내장톰캣을 사용하고, 내장톰캣은 
 	jsp를 지원x : jsp 를 지원하는톰캣 라이브러리 추가-->
