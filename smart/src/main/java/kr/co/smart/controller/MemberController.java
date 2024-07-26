@@ -19,6 +19,27 @@ public class MemberController {
 	private MemberMapper mapper;
 	private PasswordEncoder password;
 	
+	//임시 비밀번호를 발급해주는 처리를 요청
+	public void tempPassword(MemberVO vo) {
+		//화면에서 입력한 아이디와 이메일이 일치하는 회원에게
+		vo = mapper.getOneMemberByUseridAndEmail(vo);
+		StringBuffer msg = new StringBuffer("<script>");
+		if(vo == null) {
+			msg.append("alert('아이디나 이메일이 맞지 않습니다. \\n다시 확인하세요')");
+			msg.append("location='findPassword'");
+		}
+		//임시비번을 생성한 후 회원정보에 변경저장, 임시비번을 이메일로 알려주기
+		
+		msg.append("</script>");
+	}
+	
+	//비밀번호찾기 화면 요청
+	@RequestMapping("/findPassword")
+	public String findPassword(HttpSession session) {
+		session.setAttribute("category", "find");
+		return "default/member/find";
+	}
+	
 	@RequestMapping("/logout")
 	//로그아웃 처리 요청
 	public String logout(HttpSession session) {

@@ -19,20 +19,24 @@
                             	</h3>
                             	</div>
                               <div class="card-body p-5">
-                                        <form method="post" action="smartLogin">
+                                        <form method="post" action="tempPassword">
                                             <div class="form-floating mb-3">
                                                 <input class="form-control" name="userid" type="text" placeholder="아이디">
                                                 <label>아이디</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" name="userpw" type="password" placeholder="비밀번호">
-                                                <label>비밀번호</label>
+                                                <input class="form-control" name="email" type="email" placeholder="이메일">
+                                                <label>이메일</label>
                                             </div>
 <!--                                             <div class="form-check mb-3"> -->
 <!--                                                 <input class="form-check-input" id="inputRememberPassword" type="checkbox" value=""> -->
 <!--                                                 <label class="form-check-label" for="inputRememberPassword">Remember Password</label> -->
 <!--                                             </div> -->
-                                                <button class="btn btn-primary form-control py-3">로그인</button>
+													<div class="d-flex gap-4">
+                                                <button class="btn btn-primary py-3 form-control" >확인</button>
+                                                <button type="button" onclick="location='login'"
+                                                    class="btn btn-outline-primary form-control py-3 ">취소</button>
+													</div>
                                         
                                         </form>
                                     </div>

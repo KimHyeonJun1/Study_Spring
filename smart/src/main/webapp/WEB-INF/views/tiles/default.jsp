@@ -5,6 +5,7 @@
 
 <c:choose>
 	<c:when test="${category eq 'login' }"><c:set var="title" value="- 로그인"/></c:when>
+	<c:when test="${category eq 'find' }"><c:set var="title" value="- 비밀번호찾기"/></c:when>
 </c:choose>
 
 <!DOCTYPE html>
