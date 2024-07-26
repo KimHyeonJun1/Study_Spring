@@ -10,5 +10,7 @@
 <body>
 <h3 class="mt-4">스마트 IoT홈</h3>
 <img src="<c:url value='images/chicken.jpg'/>" class="w-75">
+
+
 </body>
 </html>

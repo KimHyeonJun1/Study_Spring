@@ -11,6 +11,7 @@
 	<c:when test="${category eq 'da' }"><c:set var="title" value="- 공공데이터"/></c:when>
 	<c:when test="${category eq 'vi' }"><c:set var="title" value="- 시각화"/></c:when>
 	<c:when test="${category eq 'login' }"><c:set var="title" value="- 로그인"/></c:when>
+	<c:when test="${category eq 'change' }"><c:set var="title" value="- 비밀번호변경"/></c:when>
 </c:choose>
 
 <!DOCTYPE html>
@@ -75,7 +76,7 @@
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="#!">아이디: ${loginInfo.userid}</a>
                                         <a class="dropdown-item" href="#!">마이페이지</a>
-                                        <a class="dropdown-item" href="#!">비밀번호 변경</a>
+                                        <a class="dropdown-item" href="<c:url value='/member/user/changePassword'/>">비밀번호 변경</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="<c:url value='/member/logout'/>">로그아웃</a>
                                     </div>

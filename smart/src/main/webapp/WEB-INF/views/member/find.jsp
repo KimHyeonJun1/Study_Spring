@@ -40,12 +40,7 @@
                                         
                                         </form>
                                     </div>
-                                    <div class="card-footer text-center py-3">
-                                            <div class="d-flex align-items-center justify-content-between my-2">
-                                                <a class="small" href="findPassword">비밀번호찾기</a>
-                                                <a class="smail" href="register.html">회원가입</a>
-                                            </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
