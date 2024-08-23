@@ -19,4 +19,31 @@ $(function(){
 
 	$(".date").attr("readonly", true); //날짜 입력 비활성화
 	$(".date").datepicker();
+	
+	$(".date").on("change", function(){
+		$(this).next(".date-remove").removeClass("d-none")
+	})
+	
 });
+
+$(document)
+.on("click", ".date + .date-remove", function(){
+	//폰트이미지가 동적으로 만들어지므로 문서에 이벤트 등록
+	$(this).addClass("d-none").prev(".date").val("");	
+})
+
+//우편번호 주소찾기처리
+function findPost(post, address1, address2 ){
+	new daum.Postcode({
+	        oncomplete: function(data) {
+	        	//console.log(data)
+	        	post.val(data.zonecode)
+	        	var address = data.userSelectedType == "R" ? data.roadAddress : data.jibunAddress
+	        	if(data.buildingName != "") address += " ("+data.buildingName+")"
+	        	address1.val(address)
+	        	address2.val("")
+	        }
+	    }).open();
+}
+
+

@@ -21,7 +21,16 @@ public class MemberController {
 	private MemberMapper mapper;
 	private PasswordEncoder password;
 	
-	//새빌번호로 변경저장 처리 요청
+	
+	//회원가입화면 요청
+	@RequestMapping("/join")
+	public String join(HttpSession session) {
+		session.setAttribute("category", "join");
+		return "default/member/join";
+	}
+	
+	
+	//새비밀번호로 변경저장 처리 요청
 	@ResponseBody @RequestMapping("/user/resetPassword")
 	public boolean resetPassword(MemberVO vo, String userpw) {
 		//MemberVO의 id: park, pw: Aaaa1
@@ -84,14 +93,7 @@ public class MemberController {
 		return "default/member/find";
 	}
 	
-	@RequestMapping("/logout")
-	//로그아웃 처리 요청
-	public String logout(HttpSession session) {
-		//세션의 로그인정보를 삭제하기
-		session.removeAttribute("loginInfo");
-		//응답화면-웰컴화면
-		return "redirect:/";
-	}
+	
 	
 	//로그인 처리 요청
 	@ResponseBody @RequestMapping("/smartLogin")
