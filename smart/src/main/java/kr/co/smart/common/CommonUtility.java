@@ -1,16 +1,23 @@
 package kr.co.smart.common;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.smart.member.MemberVO;
 
@@ -21,6 +28,60 @@ public class CommonUtility {
 	@Value("${spring.mail.host}") private String emailHost;
 	@Value("${spring.mail.username}") private String emailUser;
 	@Value("${spring.mail.password}") private String emailPass;
+	@Value("${smart.upload}") private String uploadPath; //d://smart/app/upload
+	
+	//첨부된 파일 삭제하기 - 물리적인 삭제
+	public void fileDelete(String fileInfo, HttpServletRequest request) {
+		if( fileInfo != null) {
+			//url경로형태 -> 실제파일경로형태
+			File file = new File(toRealFilePath(fileInfo, request) );
+			if(file.exists()) file.delete();
+		}
+	}
+	
+	//파일업로드 
+	public String fileUpload(String category, MultipartFile file, HttpServletRequest request) {
+		//d://smart/app/upload/ profile /2024/08/27
+		//d://smart/app/upload/ notice /2024/08/27
+		//d://smart/app/upload/ board /2024/08/27
+		String upload = uploadPath + category + new SimpleDateFormat("/yyyy/MM/dd/").format(new Date());
+		
+		//해당 폴더의 존재 유무를 확인해 없다면 폴더 만들기
+		File dir = new File( upload);
+		if( ! dir.exists() ) dir.mkdirs();
+		
+		
+		// 업로드할 파일명을 고유한 id로 변경하기 :as24-3da24-23adf-fa
+		String filename = UUID.randomUUID().toString() + "."
+			+ StringUtils.getFilenameExtension(file.getOriginalFilename());
+		//클라이언트에서 선택한 파일을 서버의 영역에 물리적으로 저장하는 처리
+		try {
+			file.transferTo(new File(upload, filename)  );
+		}catch(Exception e) {}
+		
+		//d://smart/app/upload/profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+		//http://localhost:8080/smart/upload/profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+		// http://localhost:8080/smart
+		return toUrlFilePath(upload, request ) + filename;
+	}
+		
+	//물리적형태 -> url형태로	
+	//uploadpath;	d://smart/app/upload/ profile /2024/08/27
+	//물리적형태		d://smart/app/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+	//url 형태		http://localhost:8080/smart/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+	public String toUrlFilePath(String filepath, HttpServletRequest request) {
+		return filepath.replace( uploadPath, appURL(request, "/upload/")) ;
+				//"http://localhost:8080/smart/upload/");
+				// http://127.0.0.1:80/smart 
+	}
+	
+	
+	//url형태 -> 실제물리적형태로 바꾸기
+	//url형태		http://localhost:8080/smart/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+	//물리적형태		d://smart/app/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+	public String toRealFilePath(String filepath, HttpServletRequest request) {
+		return filepath.replace(appURL(request, "/upload/"), uploadPath);
+	}
 	
 	//Http통신API요청
 	public String requestAPI(HttpURLConnection con) throws Exception {
@@ -78,6 +139,37 @@ public class CommonUtility {
 		sender.setHostName(emailHost);
 		sender.setAuthentication(emailUser, emailPass);//이메일 주소,비번 확인
 		sender.setSSLOnConnect(true); //로그인버튼 클릭
+	}
+	
+	//회원가입축하 메시지 보내기 이메일로
+	public void emailForJoin(MemberVO vo, String filename) {
+		HtmlEmail sender = new HtmlEmail();
+		mailSender(sender);
+		
+		try {
+		sender.setFrom(emailUser, "치킨집 관리자");//송신인
+		sender.addTo(vo.getEmail());//수신인
+		
+		//제목
+		sender.setSubject("국내 1등 치킨집 회원가입 축하");
+		//내용
+		StringBuffer content = new StringBuffer();
+		content.append("<h3><a target='_blank' href='https://www.naver.com/'>국내 1등 치킨집</a></h3>")
+				.append("<div>[<strong>").append(vo.getName()).append("</strong>]회원가입을 축하합니다</div>")
+				.append("<div>당신의 창업성공을 응원합니다</div>")
+				;
+		sender.setHtmlMsg(content.toString());
+		
+		
+		//파일첨부하기
+		EmailAttachment file = new EmailAttachment();
+		file.setPath(filename);
+		sender.attach(file);
+		sender.send(); //보내기
+		
+		}catch(Exception e) {
+			
+		}
 	}
 	
 	//임시비밀번호 이메일 보내기

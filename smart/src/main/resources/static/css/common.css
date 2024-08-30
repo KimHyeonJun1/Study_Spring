@@ -28,3 +28,5 @@ a.text-link:hover{text-decoration: underline; color: var( --bs-link-hover-color)
 .px80{ width: 80px !important; height:80px !important}
 
 .date + .date-remove {position: relative; right: 33px}
+
+textarea.form-control { resize: none; height:250px}

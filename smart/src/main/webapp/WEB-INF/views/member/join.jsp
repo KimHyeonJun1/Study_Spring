@@ -18,7 +18,12 @@
 					<h3 class="my-4">회원가입</h3>
          		</div>
   <div class="mb-2 text-danger fw-bold">* 는 필수입력항목입니다</div>					
-  <form method="post" action="register">
+  <form method="post" action="register" enctype="multipart/form-data">
+<!--   파일업로드하기 위한 설정
+	1. form 태그의 method: post
+	2. form 태그로 파일전송하도록 지정: enctype="multipart/form-data"
+ -->
+  
   <table class="table tb-row">
   <colgroup>
   	<col width="200px">
@@ -34,37 +39,46 @@
   </tr>
   <tr><th><span>*</span>아이디</th>
   	  <td>
- 	 	  <div class="row">
+ 	 	  <div class="row input-check">
 	 	 	  <div class="col-auto">
-  	 			 <input type="text" name="userid" class="form-control">
+  	 			 <input type="text" name="userid" title="아이디"class="form-control check-item">
  		 	  </div>
+ 		 	  <div class="col-auto">
+ 		 	  		<a class="btn btn-primary" id="btn-userid">중복확인</a>
+ 		 	  </div>
+ 		 	   <div class="col-auto desc fw-bold"></div>
+ 		 	   <div class="mt-2">아이디는 영문 소문자나 숫자 5자~10자</div>
   		  </div>
   	  </td>
   </tr>
   <tr><th><span>*</span>비밀번호</th>
   	  <td>
- 	 	  <div class="row">
+ 	 	  <div class="row input-check">
 	 	 	  <div class="col-auto">
-  	 			 <input type="password" name="userpw" class="form-control">
+  	 			 <input type="password" name="userpw" title="비밀번호" class="form-control check-item">
  		 	  </div>
+ 		 	  <div class=" col-auto desc fw-bold"></div>
+  		  	  <div class="mt-2">비밀번호는 영문 대/소문자, 숫자 조합 5자~10자</div>
   		  </div>
   	  </td>
   </tr>
   <tr><th><span>*</span>비밀번호확인</th>
   	  <td>
- 	 	  <div class="row">
+ 	 	  <div class="row input-check">
 	 	 	  <div class="col-auto">
-  	 			 <input type="password" name="userpw_ck" class="form-control">
+  	 			 <input type="password" name="userpw_ck" title="비밀번호확인" class="form-control check-item">
  		 	  </div>
+ 		 	   <div class="col-auto desc fw-bold"></div>
   		  </div>
   	  </td>
   </tr>
   <tr><th><span>*</span>이메일</th>
   	  <td>
- 	 	  <div class="row">
+ 	 	  <div class="row input-check">
 	 	 	  <div class="col-auto">
-  	 			 <input type="text" name="email" class="form-control">
+  	 			 <input type="text" name="email" title="이메일" class="form-control check-item">
  		 	  </div>
+ 		 	   <div class="col-auto desc fw-bold"></div>
   		  </div>
   	  </td>
   </tr>
@@ -85,17 +99,17 @@
   </tr>
   <tr><th>프로필이미지</th>
   	  <td><div class="row">
-  	  		<div class="d-flex align-items-center gap-3">
+  	  		<div class="d-flex align-items-center gap-3 file-info">
 				<!--기본이미지지정 -->
 				<div class="file-preview profile px80">
 					<i class="font-profile fa-solid fa-user-large"></i>
 				</div>
-				
 				<label>
-				<a class="btn btn-outline-primary">프로필선택</a>
-				<input type="file" name="file"
-				 class="d-none form-control image-only file-single" accept="image/*">
+					<a class="btn btn-outline-primary">프로필선택</a>
+					<input type="file" name="file"
+					 class="d-none form-control image-only file-single" accept="image/*">
 				</label>
+				<a class="btn btn-outline-danger d-none file-remove">삭제</a>
   	  		</div>
   	  </div>
   	  
@@ -150,6 +164,45 @@
 
 <script src="<c:url value='/js/member.js'/>"></script>
 <script>
+
+$("#btn-join").on("click", function(){
+	
+	if($("[name=name]").val()==""){
+		alert("성명을 입력하세요!")
+		$("[name=name]").focus()
+		return;
+	}
+	
+	//유효성 확인되면 서브밋하기
+	if(validStatus()) $("form").submit()
+})
+	
+
+$("#btn-userid").on("click", function(){
+	idCheck()
+})
+
+//아이디 중복확인
+function idCheck(){
+	var id = $("[name=userid]")
+	//입력이 유효한지 확인 후 유효하지 않으면 DB에서 확인 불필요
+	var status = member.tagStatus( id )
+	if(status.is ){
+		$.ajax({
+			url: "idCheck",
+			data: {userid: id.val() }
+		}).done(function(response){
+			//사용가능	:true	사용중: false
+			var status = response ? member.userid.usable : member.userid.unUsable;
+			member.showStatus( id, status)
+		})
+		
+	}else{
+		alert("아이디 중복확인 불필요!\n" + status.desc)
+		id.focus()
+	}
+}
+
 $(function(){
 	//생년월일자를 13세 이상으로 선택가능하게 제한하기
 	var endDay = new Date()

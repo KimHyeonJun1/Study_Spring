@@ -67,6 +67,9 @@ class SmartApplicationTests {
 		System.out.print("이메일: ");
 		vo.setEmail(scan.next());
 		
+		System.out.println("관리자(Y/N): ");
+		vo.setRole(scan.next().toUpperCase().equals("Y") ? "ADMIN" : "USER");
+		
 		scan.close();
 		
 		int dml = member.registerMemberForTest(vo);

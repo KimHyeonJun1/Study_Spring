@@ -1,25 +1,121 @@
 package kr.co.smart.controller;
 
+import java.io.File;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.smart.common.CommonUtility;
 import kr.co.smart.member.MemberMapper;
 import kr.co.smart.member.MemberVO;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@Controller @AllArgsConstructor @RequestMapping("/member")
+@Controller @RequiredArgsConstructor @RequestMapping("/member")
 public class MemberController {
-	private CommonUtility common;
-	private MemberMapper mapper;
-	private PasswordEncoder password;
+	private final CommonUtility common;
+	private final MemberMapper mapper;
+	private final PasswordEncoder password;
+	
+	@Value("${smart.files}") private String filesPath;
+	
+	//내정보 변경저장 처리 요청
+	@PutMapping("/user/myPage/modify")
+	public String mpPage(MemberVO vo, boolean img, MultipartFile file, HttpSession session, HttpServletRequest request) {
+		//원래 프로필정보를 조회해오기
+		MemberVO user = mapper.getOneMember(vo.getUserid());
+		
+		//프로필을 첨부하지 않은 경우
+		if(file.isEmpty() ) {
+			//원래X -> 화면imgX -> 처리X
+			//원래O -> 화면 imgO -> DB저장할 vo에 담기
+			//원래O -> 화면프로필삭제: 화면imgX -> 물리적파일 삭제
+			if(img) {
+				vo.setProfile(user.getProfile() );
+			}
+			
+		}else {
+			//프로필을 첨부한 경우
+			//원래X -> 새로첨부 -> DB저장할 vo의 profile에 담기
+			//원래O -> 바꿔첨부 -> DB저장할 vo의 profile에 담기 + 물리적파일 삭제
+			vo.setProfile(common.fileUpload("profile", file, request) );
+			
+		}
+		
+
+		//화면에서 입력한 정보로 DB에 변경저장
+		if(mapper.updateMember(vo)==1) {
+			//물리적파일삭제
+			//원래O -> 화면imgX -> 물리적파일 삭제
+			if(user.getProfile() != null) {
+				if(! img || ! file.isEmpty() ) {
+					common.fileDelete(user.getProfile(), request);
+				}
+			}
+			session.setAttribute("loginInfo", vo);
+		};
+		return "redirect:/";
+	}
+	
+	//MyPage 화면 요청
+	@RequestMapping("/user/myPage")
+	public String myPage(HttpSession session, Model model) {
+		session.setAttribute("category", "my");
+		
+		//로그인한 사용자정보를 조회해오기
+		String userid =  ((MemberVO)session.getAttribute("loginInfo")).getUserid();
+		model.addAttribute("vo", mapper.getOneMember(userid) );
+		return "member/myPage";
+	}
+	
+	
+	//회원가입처리 요청
+	@ResponseBody @RequestMapping("/register")
+	public String join(MultipartFile file, MemberVO vo, HttpServletRequest request) {
+			//프로필이미지 첨부한 경우
+			if( ! file.isEmpty()) {
+				////http://localhost:8080/smart/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+				vo.setProfile( common.fileUpload("profile", file, request));
+			}
+			//입력비번 암호화하기
+			vo.setUserpw(password.encode(vo.getUserpw()) );
+			
+			//화면에서 입력한 정보로 DB에 회원정보저장 처리 ->로그인/회원가입 화면으로 연결
+			StringBuffer msg = new StringBuffer("<script>");
+			
+			if(mapper.registerMember(vo) == 1) {
+				//회원가입축하메시지를 이메일로 보내기
+				common.emailForJoin(vo, new File(filesPath + "치킨.jpg").getPath());
+	
+				
+				msg.append("alert('회원가입을 축하합니다'); ");
+				msg.append("location='login'; ");
+				//return "redirect:login";
+		}else {
+			msg.append("alert('회원가입 실패'); ");
+			msg.append("location='join'; ");
+			
+			//return "redirect:join";
+		}
+		msg.append("</script>");
+		return msg.toString();
+	}
+	
+	
+	//아이디중복확인 요청
+	@ResponseBody @RequestMapping("/idCheck")
+	public boolean idCheck(String userid) {
+		return mapper.getOneMember(userid) == null ? true : false;
+	}
 	
 	
 	//회원가입화면 요청

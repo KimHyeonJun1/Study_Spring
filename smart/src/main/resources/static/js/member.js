@@ -2,8 +2,49 @@
  *  회원관련처리
  */
 
+//각 태그입력유효성 재확인
+function validStatus(){
+	var valid = true;
+	
+	$(".check-item").each(function(){
+		var desc = $(this).closest(".input-check").find(".desc")
+		//아이디는 사용가능 아닌 경우 유효하지 않음
+		if($(this).is("[name=userid]") && ! desc.text().includes("사용가능") ){
+			valid = false;
+		}else if(! desc.hasClass("text-success") ){
+			valid = false;
+		}
+		
+		if( ! valid){ //회원가입불가 이유 표시하기
+			alert("회원가입 불가\n" + $(this).attr("title") +" " + desc.text())
+			$(this).focus()
+			return valid;
+			
+		}
+		
+	})
+	return valid;
+}
+
+$(function(){
+	//생년월일자를 13세 이상으로 선택가능하게 제한하기
+	var endDay = new Date()
+	endDay.setFullYear(endDay.getFullYear() - 13 );
+	$("[name=birth]").datepicker("option", "maxDate", endDay);
+	
+})
+
 $("#btn-post").on("click", function(){
 	findPost($("[name=post]"), $("[name=address1]"), $("[name=address2]"))
+})
+
+//키보드 입력시 바로 입력태그상태 표시하기
+$(".check-item").on("keyup", function(evt){
+	//아이디에서 엔터하는 경우 중복확인
+	if( $(this).is("[name=userid]") && evt.keyCode==13){
+		idCheck()
+	}else
+		member.showStatus($(this));
 })
 
 
@@ -12,8 +53,42 @@ var member = {
 	tagStatus: function(tag, keyup){
 		if(tag.is("[name=userpw]")) 		return this.userpwStatus( tag.val(), keyup );
 		else if(tag.is("[name=userpw_ck]")) return this.userpwCheckStatus(tag.val());
+		else if(tag.is("[name=userid]"))    return this.useridStatus(tag.val())
+		else if(tag.is("[name=email]"))		return this.emailStatus(tag.val());
 	},
 	
+	//이메일상태 확인
+	emailStatus: function(email){
+		var reg = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/i;
+		if(email =="")				return this.common.empty;
+		else if(reg.test(email))	return this.email.valid;
+		else						return this.email.invaild;
+	},					
+	
+	//이메일상태값
+	email: {
+		valid: { is: true,	desc: "형식이 유효합니다"},
+		invaild: {is: false,	desc: "형식이 유효하지 않습니다"}		
+	},
+	
+	// 아이디 상태 확인
+	useridStatus: function(id){
+		var reg = /[^a-z0-9]/g
+		if(id=="")				return this.common.empty;
+		else if(reg.test(id) )	return this.userid.invalid;
+		else if(id.length<5)	return this.common.min;
+		else if(id.length>10)	return this.common.max;
+		else					return this.userid.valid;
+		
+	},
+	
+	//아이디의 상태값
+	userid: {
+		valid:   { is: true,	desc: "중복확인하세요"},
+		invalid: {is: false,	desc: "영문 소문자, 숫자만 입력하세요"},
+		usable:	 {is: true,		desc: "사용가능 합니다"},
+		unUsable: {is: false,	desc: "이미 사용중입니다"}
+	},
 	//공통으로 사용할 상태값
 	common: {
 		empty: { is: false, desc: "입력하세요" },
@@ -61,8 +136,10 @@ var member = {
 	},
 	
 	//입력상태표시
-	showStatus: function(tag){
-		var status = this.tagStatus(tag, true); //키보드입력여부 추가
+	showStatus: function(tag, status){
+		if( status == undefined){
+			status = this.tagStatus(tag, true); //키보드입력여부 추가
+		} 
 		tag.closest(".input-check").find(".desc")
 									.text(status.desc)
 									.removeClass("text-danger text-success")
