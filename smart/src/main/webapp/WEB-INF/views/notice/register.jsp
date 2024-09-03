@@ -8,11 +8,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h3 class="my-4">공지글 등록</h3>
+<h3 class="my-4 ">공지글 등록</h3>
 <form method="post" action="register" enctype="multipart/form-data">
 <table class="table tb-row">
 <colgroup>
-	<col width=200px">
+	<col width=200px>
 	<col>
 </colgroup>
 <tr><th>제목</th>
