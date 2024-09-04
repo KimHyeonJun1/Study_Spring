@@ -18,4 +18,5 @@ public interface NoticeMapper {
 
 	List<Object> getListOfNotice(PageVO page);	//공지글목록조회
 	int countOfNotice(PageVO page);				//공지글 총건수 조회
+	int registerReply(NoticeVO vo);		//신규 답글저장
 }
