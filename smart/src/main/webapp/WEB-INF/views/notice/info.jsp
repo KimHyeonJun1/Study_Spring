@@ -94,8 +94,9 @@ $("#btn-list, #btn-modify, #btn-reply").on("click", function(){
 	id = id.substr(id.indexOf("-")+1) // list, modify, reply/register
 	if(id=="reply"){
 		id = `<c:url value="/notice/reply/register"/>`
+	}else if(id =="list"){
+		id = `<c:url value="/notice/list"/>`
 	}
-	
 	location= id
 	+ "?id=${vo.id}&pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}"
 })

@@ -26,7 +26,7 @@ public class SocialController {
 	@Value("${naver.client-secret}")private String naverSecret;
 	@Value("${kakao.client-id}")private String kakaoId;
 	
-	@RequestMapping("/logout")
+	//@RequestMapping("/logout")
 	//로그아웃 처리 요청
 	public String logout(HttpSession session, HttpServletRequest request) {
 		MemberVO vo = (MemberVO)session.getAttribute("loginInfo");
