@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.co.smart.auth.LoginUser;
 import kr.co.smart.common.CommonUtility;
 import kr.co.smart.member.MemberMapper;
 import kr.co.smart.member.MemberVO;
@@ -28,9 +30,10 @@ public class MemberController {
 	
 	@Value("${smart.files}") private String filesPath;
 	
+	//Principal: 접근주체자인 UserDetails(LoginUser)
 	//내정보 변경저장 처리 요청
 	@PutMapping("/user/myPage/modify")
-	public String mpPage(MemberVO vo, boolean img, MultipartFile file, HttpSession session, HttpServletRequest request) {
+	public String mpPage(MemberVO vo, boolean img, MultipartFile file, @AuthenticationPrincipal LoginUser principal, HttpSession session, HttpServletRequest request) {
 		//원래 프로필정보를 조회해오기
 		MemberVO user = mapper.getOneMember(vo.getUserid());
 		
@@ -61,18 +64,18 @@ public class MemberController {
 					common.fileDelete(user.getProfile(), request);
 				}
 			}
-			session.setAttribute("loginInfo", vo);
-		};
+			principal.setUser(vo);
+		}
 		return "redirect:/";
 	}
 	
 	//MyPage 화면 요청
 	@RequestMapping("/user/myPage")
-	public String myPage(HttpSession session, Model model) {
+	public String myPage(HttpSession session, Model model, @AuthenticationPrincipal LoginUser user) {
 		session.setAttribute("category", "my");
 		
 		//로그인한 사용자정보를 조회해오기
-		String userid =  ((MemberVO)session.getAttribute("loginInfo")).getUserid();
+		String userid =  user.getUsername();
 		model.addAttribute("vo", mapper.getOneMember(userid) );
 		return "member/myPage";
 	}
@@ -128,7 +131,8 @@ public class MemberController {
 	
 	//새비밀번호로 변경저장 처리 요청
 	@ResponseBody @RequestMapping("/user/resetPassword")
-	public boolean resetPassword(MemberVO vo, String userpw) {
+	public boolean resetPassword(MemberVO vo, String userpw, @AuthenticationPrincipal LoginUser user) {
+		vo.setUserid( user.getUsername()); //인증된 사용자 아이디 를 글쓴이의 아이디로 담기
 		//MemberVO의 id: park, pw: Aaaa1
 		vo.setUserpw(password.encode(userpw) ); //입력비번을 암호화하기 DB에
 		return mapper.updatePassword(vo)==1 ? true : false;
@@ -138,9 +142,9 @@ public class MemberController {
 	//현재 입력비번이 정확한지 확인 요청
 	@ResponseBody
 	@RequestMapping("/user/correctPassword")
-	public boolean correctPassword(String userid, String userpw) {
+	public boolean correctPassword(String userid, String userpw, @AuthenticationPrincipal LoginUser user) {
 		//입력한 비번이 DB의 비번과 일치하는지 판단
-		MemberVO vo = mapper.getOneMember(userid);
+		MemberVO vo = mapper.getOneMember(user.getUsername());
 		return password.matches(userpw, vo.getUserpw());
 	}
 	

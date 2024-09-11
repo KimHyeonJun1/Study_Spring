@@ -33,10 +33,12 @@
                            <input class="form-control" name="userpw" type="password" placeholder="비밀번호">
                            <label>비밀번호</label>
                        </div>
-<!--                                             <div class="form-check mb-3"> -->
-<!--                                                 <input class="form-check-input" id="inputRememberPassword" type="checkbox" value=""> -->
-<!--                                                 <label class="form-check-label" for="inputRememberPassword">Remember Password</label> -->
-<!--                                             </div> -->
+                          <div class="form-check mb-3">
+                         <label>
+                              <input class="form-check-input" type="checkbox" checked name="remember-me">
+                             로그인 상태 유지
+                              </label>
+                          </div>
                            <button class="btn btn-primary form-control py-3">로그인</button>
                    
                    </form>
@@ -57,7 +59,11 @@
 </body>
 <script>
 $("#naver, #kakao").on("click", function(){
-	location = $(this).attr("id") + "Login"
+	//http://localhost:8080/smart/member/naverLogin
+	//http://localhost:8080/oauth2/authorization/naver
+	//http://localhost:8080/oauth2/authorization/kakao
+	//location = $(this).attr("id") + "Login" 
+	location = "<c:url value='/oauth2/authorization/' />" + $(this).attr("id")
 })
 </script>
 

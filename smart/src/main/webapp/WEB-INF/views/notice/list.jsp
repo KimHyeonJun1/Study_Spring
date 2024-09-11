@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,9 +27,10 @@
 	
 	</form>
 <!-- 	관리자로 로그인되어 있는 경우만 글쓰기 가능 -->
-	<c:if test="${loginInfo.role =='ADMIN'}">
+	<sec:authorize access="hasAuthority('ADMIN')">
 	<button class="btn btn-primary" onclick="location='register'">글쓰기</button>
-	</c:if>
+	</sec:authorize>
+	
 </div>
 
 
@@ -49,8 +51,8 @@
 <c:forEach items="${page.list}" var="vo">
 <tr>
 	<td>${vo.no}</td>
-	<td><span style="margin-left:${15*vo.indent}px"></span>
-		<c:if test="${vo.indent>0}"><i class="fa-regular fa-comment-dots"></i></c:if>
+	<td><span style="margin-left:${15 * vo.indent}px"></span>
+		<c:if test="${vo.indent > 0}"><i class="fa-regular fa-comment-dots"></i></c:if>
 		<a class="text-link" href="${vo.indent>0 ? 'reply/info' : 'info' }?id=${vo.id}&pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}"> ${vo.title}</a></td>
 	<td>${vo.name}</td>
 	<td>${vo.writedate}</td>

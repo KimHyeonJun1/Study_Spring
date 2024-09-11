@@ -31,12 +31,24 @@
 	</properties>
 	<dependencies>
 	
+	<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-oauth2-client</artifactId>
+</dependency>
+	
 <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
 <dependency>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-email</artifactId>
     <version>1.6.0</version>
 </dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-taglibs</artifactId>
+</dependency>
+
 	
 	<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
 <dependency>
@@ -47,7 +59,7 @@
 
 	
 	
-	<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+	<!-- https://mvnrepository.com/artifact/javax.servlet/jstl 과제-->
 <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>jstl</artifactId>  
@@ -70,7 +82,7 @@
 	
 	<!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-jasper -->
 <!-- spring boot는 내장톰캣을 사용하고, 내장톰캣은 
-	jsp를 지원x : jsp 를 지원하는톰캣 라이브러리 추가-->
+	jsp를 지원x : jsp 를 지원하는톰캣 라이브러리 추가 -과제-->
 		<dependency>
 		    <groupId>org.apache.tomcat.embed</groupId>
 		    <artifactId>tomcat-embed-jasper</artifactId>
@@ -83,13 +95,13 @@
     <version>3.0.8</version>
 </dependency>
 
-<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc11 -->
+<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc11 과제-->
 <dependency>
     <groupId>com.oracle.database.jdbc</groupId>
     <artifactId>ojdbc11</artifactId>
 </dependency>
 
-<!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+<!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter 과제 -->
 <dependency>
     <groupId>org.mybatis.spring.boot</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
