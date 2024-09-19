@@ -231,6 +231,16 @@ $(document)
 	console.log("remove>",Files.files)
 })
 
+function addToForm(info){
+	return `<input type="hidden" name="id" value="${info.id}">
+	 <input type="hidden" name="pageNo" value="${info.pageNo}">
+	 <input type="hidden" name="search" value="${info.search}">
+	 <input type="hidden" name="keyword" value="${info.keyword}">
+	 <input type="hidden" name="listSize" value="${info.listSize}">
+	`;
+
+}
+
 //파일크기제한하기
 function fileSizeOver(file, tag){
 	//1K =1024b, 1M=1024*2024b, 1G=1024*1024*1024b
