@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.co.smart.member.MemberMapper;
-import kr.co.smart.member.MemberVO;
 import lombok.RequiredArgsConstructor;
 
 @Controller @RequiredArgsConstructor

@@ -9,7 +9,7 @@
 </head>
 <body>
 <h3 class="mt-4">faq 홈</h3>
-
+<a href ="faq/list">faq리스트</a>
 
 </body>
 </html>
