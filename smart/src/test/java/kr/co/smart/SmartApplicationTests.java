@@ -1,5 +1,7 @@
 package kr.co.smart;
 
+import static org.assertj.core.api.Assertions.in;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,10 +17,11 @@ import kr.co.smart.member.MemberVO;
 
 @SpringBootTest
 class SmartApplicationTests {
-	
-	@Autowired private CustomerMapper mapper; //필드주입
+
+	@Autowired private CustomerMapper mapper;	//필드주입
 	@Autowired private MemberMapper member; //필드주입
 	@Autowired private PasswordEncoder passwordEncoder;
+	
 	
 	//로그인
 	@Test
@@ -30,19 +33,18 @@ class SmartApplicationTests {
 		System.out.print("비밀번호: ");
 		String userpw = scan.next();
 		
-		
 		scan.close();
 		
 		MemberVO vo = member.getOneMember(userid);
-		if(vo == null) {
-			System.out.println("아이디가 일치하지 않습니다");
+		if(vo==null) {
+			System.out.println("아이디 불일치");
 		}else {
-			//입력비번과 암호화된 DB의 비번의 일치여부 확인
+			//입력비번과 암호화된 DB의 비번 일치여부 확인
 			boolean match = passwordEncoder.matches(userpw, vo.getUserpw());
 			if(match) {
-				System.out.println( vo.getName()+" 회원으로 로그인됨");
-			}else {
-				System.out.println("비밀번호를 잘못입력하셨습니다");
+				System.out.println(vo.getName() + "회원으로 로그인됨");
+			} else {
+				System.out.println("비번 불일치");
 			}
 		}
 	}
@@ -53,22 +55,22 @@ class SmartApplicationTests {
 		Scanner scan = new Scanner(System.in);
 		
 		MemberVO vo = new MemberVO();
-		System.out.print("이름: ");
+		System.out.println("이름: ");
 		String name = scan.next();
 		vo.setName(name);
 		
-		System.out.print("아이디: ");
-		vo.setUserid(scan.next());
+		System.out.println("아이디: ");
+		vo.setUserid(scan.next() );
 		
-		System.out.print("비밀번호: ");
+		System.out.println("비번: ");
 		//입력한 비밀번호를 암호화시켜서 DB에 저장할 수 있도록 암호화하기
-		vo.setUserpw(passwordEncoder.encode(scan.next()));
+		vo.setUserpw( passwordEncoder.encode(scan.next() ) );
 		
-		System.out.print("이메일: ");
-		vo.setEmail(scan.next());
+		System.out.println("이메일: ");
+		vo.setEmail(scan.next() );
 		
-		System.out.println("관리자(Y/N): ");
-		vo.setRole(scan.next().toUpperCase().equals("Y") ? "ADMIN" : "USER");
+		System.out.println("관리자?(Y/N): ");
+		vo.setRole(scan.next().toUpperCase().equals("Y") ? "ADMIN" : "USER" );
 		
 		scan.close();
 		
@@ -77,11 +79,10 @@ class SmartApplicationTests {
 	}
 	
 	
-	
 	@Test
-	void customerList() {
+	void contextList() {
 		List<CustomerVO> list = mapper.getListOfCustomer();
-		System.out.println("고객수>" + list.size());
+		System.out.println(list.size() );
 	}
 
 }

@@ -7,15 +7,17 @@
 delete from customer where id = #{id}
 </delete>
 
+
+
 <!-- 고객정보변경저장 -->
 <update id="updateCustomer">
 update customer
 set name = #{name}, gender = #{gender}, phone = #{phone}, email = #{email}
-where id= #{id}
+where id = #{id} <!-- 한명만 변경저장 -->
 </update>
 
 <!-- 선택한 고객정보 조회 -->
-<select id="getOneCustomer" resultType="customer">
+<select id="getOneCustomer">
 select * from customer where id = #{id}
 </select>
 
@@ -29,7 +31,7 @@ values (#{name}, #{gender}, #{email}, #{phone})
 <select id="getListOfCustomer" resultType="customer">
 select * from customer
 <if test="name != null and name != ''">
-where name like '%'|| #{name}|| '%'
+where name like '%'|| #{name} || '%'
 </if>
 </select>
 

@@ -16,11 +16,10 @@ public class TilesConfig {
 		view.setOrder(0);
 		return view;
 	}
-	
 	@Bean
 	TilesConfigurer tilesConfigurer() {
 		TilesConfigurer config = new TilesConfigurer();
-		config.setDefinitions("/WEB-INF/views/tiles/config.xml");
+		config.setDefinitions("WEB-INF/views/tiles/config.xml");
 		return config;
 	}
 	

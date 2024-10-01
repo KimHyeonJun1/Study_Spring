@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE tiles-definitions PUBLIC
-       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
-      <tiles-definitions>
-      	<definition template="/WEB-INF/views/tiles/layout.jsp" name="*">
-      		<put-attribute name="container" value="/WEB-INF/views/{1}.jsp"/>
-			</definition>
-      	<definition template="/WEB-INF/views/tiles/layout.jsp" name="*/*">
-      		<put-attribute name="container" value="/WEB-INF/views/{1}/{2}.jsp"/>
-      		</definition>
-      	<definition template="/WEB-INF/views/tiles/default.jsp" name="default/*/*">
-      		<put-attribute name="container" value="/WEB-INF/views/{1}/{2}.jsp"/>
-      		</definition>
-      		
-      </tiles-definitions>
+       
+<tiles-definitions>
+
+   <definition template="/WEB-INF/views/tiles/layout.jsp" name="*">
+      <put-attribute name="container" value="/WEB-INF/views/{1}.jsp"></put-attribute>
+   </definition>
+   <definition template="/WEB-INF/views/tiles/layout.jsp" name="*/*">
+      <put-attribute name="container" value="/WEB-INF/views/{1}/{2}.jsp"></put-attribute>
+   </definition>
+   <definition template="/WEB-INF/views/tiles/default.jsp" name="default/*/*">
+      <put-attribute name="container" value="/WEB-INF/views/{1}/{2}.jsp"></put-attribute>
+   </definition>
+
+</tiles-definitions>

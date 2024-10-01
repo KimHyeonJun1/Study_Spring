@@ -9,8 +9,7 @@
   </appender>
 
   <logger name="kr.co.smart">
-<!--     <level value="trace"/>  sql문+결과-->
-    <level value="debug"/>
+    <level value="debug"/> <!--trace: SQL문+결과, debug: SQL문 -->
   </logger>
   <root level="error">
     <appender-ref ref="stdout"/>

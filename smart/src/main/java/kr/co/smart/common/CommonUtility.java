@@ -30,269 +30,278 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.smart.member.MemberVO;
 
-//@Component : @Service, @Resposioty,
+//@Component : @Service, @Repository, 
 @Service
 public class CommonUtility {
-	
+
+	// 임시비밀번호 이메일 보내기
 	@Value("${spring.mail.host}") private String emailHost;
 	@Value("${spring.mail.username}") private String emailUser;
 	@Value("${spring.mail.password}") private String emailPass;
-	@Value("${smart.upload}") private String uploadPath; //d://smart/app/upload
+	@Value("${smart.upload}") private String uploadPath; // d://smart/app/upload
 	
-		//키의 존재유무에 따라 데이터처리하기
+	//키의 존재유무에 따라 데이터처리하기
 		public String hasKey(JSONObject json, String key) {
 			return json.has(key) ? json.getString(key) : "";
 		}
-		//기본값을 저장해야 하는 경우
+		//기본값을 지정해야하는 경우
 		public String hasKey(JSONObject json, String key, String defaultValue) {
 			return json.has(key) ? json.getString(key) : defaultValue;
 		}
+		
 	
-	//첨부된 파일 삭제하기 - 물리적인 삭제
+	
+	//첨부된 파일 삭제하기 -물리적삭제
 	public void fileDelete(String fileInfo, HttpServletRequest request) {
-		if( fileInfo != null) {
+		if( fileInfo != null ) {
 			//url경로형태 -> 실제파일경로형태
-			File file = new File(toRealFilePath(fileInfo, request) );
-			if(file.exists()) file.delete();
+			 File file = new File(toRealFilePath(fileInfo, request ) );
+			 if(file.exists() ) file.delete();
 		}
 	}
 	
 	//파일 존재 유무 확인
 	public void fileExist(String filepath, Model model, HttpServletRequest request) {
-		if(filepath != null) {
+		if( filepath != null ) {
 			//물리적인 파일의 존재유무 확인
-			filepath = toRealFilePath(filepath, request);
-			model.addAttribute("file", new File(filepath).exists() );
+			 filepath = toRealFilePath(filepath, request);
+			model.addAttribute("file", new File( filepath ).exists() );
 		}
+		
 	}
 	
 	public void fileExist( List<FileVO> files, Model model, HttpServletRequest request) {
 		if( files != null) {
 			HashMap<Integer, Boolean> map = new HashMap<Integer, Boolean>();
-			for( FileVO f: files) {
+			for( FileVO f : files) {
 				String filepath = toRealFilePath(f.getFilepath(), request);
-				map.put(f.getId(), new File(filepath).exists() );
+				map.put( f.getId(),  new File(filepath).exists() );
 			}
 			model.addAttribute("files", map);
 		}
 	}
 	
-	
 	//파일 다운로드
-	public void fileDownload(String filepath, String filename, HttpServletRequest request,
-								HttpServletResponse response) throws Exception{
-	// url경로: http://localhost:8080/smart/upload/notice/2024/08/30/7db6e612-d727-47ee-8baa-c66b9d3e972a.hwp
-	// 물리적실제경로 d:\smart\ app \ upload\notice\2024\09\02	
+	public void fileDownload(String filepath, String filename
+								, HttpServletRequest request
+								, HttpServletResponse response) throws Exception {
+		// url경로  : http://localhost/smart/upload/notice/2024/09/02
+		//물리적실제경로              d://smart/app/upload/notice/2024/09/02
 		filepath = toRealFilePath(filepath, request);
 		
 		//클라이언트컴에 쓰기작업할 파일의 타입
-		String mime = request.getServletContext().getMimeType(filename);
-		response.setContentType(mime);
+		String mine = request.getServletContext().getMimeType(filename);
+		response.setContentType(mine);
 		
-		//파일명에 있는 한글 처리 : abc dsf
-		filename = URLEncoder.encode( filename, "utf-8").replaceAll("\\+", "%20");
-		response.setHeader("content-disposition", "attachement; filename=" + filename);
-		FileCopyUtils.copy(new FileInputStream(filepath), response.getOutputStream());
+		//파일명에 있는 한글 처리, 공백처리
+		 filename = URLEncoder.encode( filename, "utf-8").replaceAll("\\+", "%20");
+		response.setHeader("content-disposition", "attachment; filename=" + filename);
+		FileCopyUtils.copy(new FileInputStream(filepath), response.getOutputStream() );
 	}
 	
 	//다중 파일 업로드
-	public ArrayList<FileVO> fileUpload(String category, MultipartFile[] files, HttpServletRequest request) {
-		
+	public ArrayList<FileVO> fileUpload(String category, MultipartFile[] files
+							, HttpServletRequest request) {
 		ArrayList<FileVO> list = null;
-		for( MultipartFile file : files ) {
-			if(file.isEmpty() ) continue;
-			if( list == null )list = new ArrayList<FileVO>();
+		for( MultipartFile file : files) {
+			if( file.isEmpty() ) continue;
+			if(list == null) list = new ArrayList<FileVO>();
 			FileVO vo = new FileVO();
 			vo.setFilename(file.getOriginalFilename() );
-			vo.setFilepath(fileUpload(category, file, request) );
+			vo.setFilepath( fileUpload(category, file, request) );
 			list.add(vo);
 		}
 		return list;
 	}
 	
-	//단일 파일업로드 
-	public String fileUpload(String category, MultipartFile file, HttpServletRequest request) {
-		//d://smart/app/upload/ profile /2024/08/27
-		//d://smart/app/upload/ notice /2024/08/27
-		//d://smart/app/upload/ board /2024/08/27
-		String upload = uploadPath + category + new SimpleDateFormat("/yyyy/MM/dd/").format(new Date());
-		
-		//해당 폴더의 존재 유무를 확인해 없다면 폴더 만들기
-		File dir = new File( upload);
+	
+	//단일파일 업로드
+	public String fileUpload(String category, MultipartFile file
+							, HttpServletRequest request) {
+		// d://smart/app/upload/profile/2024/08/27
+		// d://smart/app/upload/notice/2024/08/27
+		// d://smart/app/upload/board/2024/08/27
+		String upload = uploadPath + category 
+						+ new SimpleDateFormat("/yyyy/MM/dd/").format(new Date());
+		//해당 폴더의 존재유뮤를 확인해 없다면 폴더 만들기
+		File dir = new File( upload );
 		if( ! dir.exists() ) dir.mkdirs();
 		
-		
-		// 업로드할 파일명을 고유한 id로 변경하기 :as24-3da24-23adf-fa
+		// 업로드할 파일명을 고유한 id로 변경하기 : ad24-3ag-f234-adf-h.jpg
 		String filename = UUID.randomUUID().toString() + "."
-			+ StringUtils.getFilenameExtension(file.getOriginalFilename());
-		//클라이언트에서 선택한 파일을 서버의 영역에 물리적으로 저장하는 처리
+						+ StringUtils.getFilenameExtension(file.getOriginalFilename() );
+		//클라이언트에서 선택한 파일을 서버의 영역에 물리적으로 저장
 		try {
-			file.transferTo(new File(upload, filename)  );
+			file.transferTo(new File(upload, filename) );
 		}catch(Exception e) {}
 		
-		//d://smart/app/upload/profile/2024/08/27/ad24-dag-fadf-adfae2-dae
-		//http://localhost:8080/smart/upload/profile/2024/08/27/ad24-dag-fadf-adfae2-dae
-		// http://localhost:8080/smart
-		return toUrlFilePath(upload, request ) + filename;
-	}
+		// d://smart/app/upload/profile/2024/08/27/ad24-3ag-f234-adf-h.jpg
+		//http://localhost/smart/upload/profile/2024/08/27/ad24-3ag-f234-adf-h.jpg
+		//http://localhost/smart
+		return toUrlFilePath(upload, request) + filename ;
 		
-	//물리적형태 -> url형태로	
-	//uploadpath;	d://smart/app/upload/ profile /2024/08/27
-	//물리적형태		d://smart/app/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
-	//url 형태		http://localhost:8080/smart/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+	}
+	
+	//물리적형태 -> url형태
+	// 			d://smart/app/upload/ profile/2024/08/27/ad24-3ag-f234-adf-h.jpg
+	//http://localhost/smart/upload/  profile/2024/08/27/ad24-3ag-f234-adf-h.jpg
 	public String toUrlFilePath(String filepath, HttpServletRequest request) {
-		return filepath.replace( uploadPath, appURL(request, "/upload/")) ;
-				//"http://localhost:8080/smart/upload/");
-				// http://127.0.0.1:80/smart 
+		return filepath.replace(uploadPath, appURL(request, "/upload/"));
 	}
 	
-	
-	//url형태 -> 실제물리적형태로 바꾸기
-	//url형태		http://localhost:8080/smart/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
-	//물리적형태		d://smart/app/upload/	profile/2024/08/27/ad24-dag-fadf-adfae2-dae
+	// url형태 -> 실제물리적형태로 바꾸기
+	// url형태 -> http://localhost/smart/upload/  profile/2024/08/27/
+	// 물리적셩태-> d://smart/app/upload/ profile/2024/08/27/
 	public String toRealFilePath(String filepath, HttpServletRequest request) {
-		return filepath.replace(appURL(request, "/upload/"), uploadPath);
+		return filepath.replace(appURL(request, "/upload/"), uploadPath );
 	}
 	
-	//Http통신API요청
-	public String requestAPI(HttpURLConnection con) throws Exception {
-		 int responseCode = con.getResponseCode();
-	      BufferedReader br;
-	      //System.out.print("responseCode="+responseCode);
-	      if(responseCode==200) { // 정상 호출
-	        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-	      } else {  // 에러 발생
-	        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-	      }
-	      String inputLine;
-	      StringBuffer res = new StringBuffer();
-	      while ((inputLine = br.readLine()) != null) {
-	        res.append(inputLine);
-	      }
-	      br.close();
-	      if(responseCode==200) {
-	    	  System.out.println(res.toString()); //"{ 'a': 10, 'b': 20}"
-	    	  
-	      }
-	    
-	    return res.toString();
-	}
 	
-		
-	
-	public String requestAPI(String apiURL, String property) {
-		try {
-		      HttpURLConnection con = (HttpURLConnection)( new URL(apiURL)).openConnection();
-		      con.setRequestMethod("GET");
-		      con.addRequestProperty("Authorization", property);
-		      apiURL = requestAPI(con);
-		}catch(Exception e) {
+	// Http통신API요청
+	public String requestAPI(HttpURLConnection con)  throws Exception {
+		int responseCode = con.getResponseCode();
+		BufferedReader br;
+		// System.out.print("responseCode=" + responseCode);
+		if (responseCode == 200) { // 정상 호출
+			br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		} else { // 에러 발생
+			br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
 		}
-		    return apiURL;
+		String inputLine;
+		StringBuffer res = new StringBuffer();
+		while ((inputLine = br.readLine()) != null) {
+			res.append(inputLine);
+		}
+		br.close();
+		
+		if (responseCode == 200) {
+			System.out.println(res.toString()); // "{ 'a':10, 'b':20 }"
+		}
+		
+		return  res.toString();
 	}
 
-		
-		public String requestAPI(String apiURL) {
+	public String requestAPI(String apiURL, String property) {
 		try {
-		      HttpURLConnection con = (HttpURLConnection)( new URL(apiURL)).openConnection();
-		      con.setRequestMethod("GET");
-		      apiURL = requestAPI(con);
-		    } catch (Exception e) {
-		    }
+			HttpURLConnection con = (HttpURLConnection) (new URL(apiURL)).openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Authorization", property);
+			apiURL = requestAPI( con );
+		}catch(Exception e) {
+		}
 		return apiURL;
+	}
+	
+	public String requestAPI(String apiURL) {
+		try {
+			HttpURLConnection con = (HttpURLConnection) (new URL(apiURL)).openConnection();
+			con.setRequestMethod("GET");
+			apiURL = requestAPI( con );
+		} catch (Exception e) {
+		}
+		return apiURL;
+	}
+	
+	//공공데이터 응답결과
+	public JSONObject responseBody(String url) {
+		JSONObject json = new JSONObject( requestAPI(url) );
+		return json.getJSONObject( "response" ).getJSONObject("body");
+	}
+	
+	public JSONObject response(String url) {
+		JSONObject json = new JSONObject( requestAPI(url) ).getJSONObject( "response" );
+		//body가 없으면 만들어 넣기
+		json.put("body", json.has("body") ? json.getJSONObject("body") 
+										  : new JSONObject("{totalCount: 0}"));
+		return json;
 	}
 	
 	
 	private void mailSender(HtmlEmail sender) {
 		sender.setDebug(true);
 		sender.setCharset("utf-8");
-		
+
 		sender.setHostName(emailHost);
-		sender.setAuthentication(emailUser, emailPass);//이메일 주소,비번 확인
-		sender.setSSLOnConnect(true); //로그인버튼 클릭
+		sender.setAuthentication(emailUser, emailPass); // 이메일주소, 비번
+		sender.setSSLOnConnect(true); // 로그인버튼 클릭
 	}
 	
-	//회원가입축하 메시지 보내기 이메일로
-	public void emailForJoin(MemberVO vo, String filename) {
-		HtmlEmail sender = new HtmlEmail();
-		mailSender(sender);
-		
-		try {
-		sender.setFrom(emailUser, "치킨집 관리자");//송신인
-		sender.addTo(vo.getEmail());//수신인
-		
-		//제목
-		sender.setSubject("국내 1등 치킨집 회원가입 축하");
-		//내용
-		StringBuffer content = new StringBuffer();
-		content.append("<h3><a target='_blank' href='https://www.naver.com/'>국내 1등 치킨집</a></h3>")
-				.append("<div>[<strong>").append(vo.getName()).append("</strong>]회원가입을 축하합니다</div>")
-				.append("<div>당신의 창업성공을 응원합니다</div>")
-				;
-		sender.setHtmlMsg(content.toString());
-		
-		
-		//파일첨부하기
-		EmailAttachment file = new EmailAttachment();
-		file.setPath(filename);
-		sender.attach(file);
-		sender.send(); //보내기
-		
-		}catch(Exception e) {
-			
-		}
+	//회원가입축하 메시지 보내기
+	public void emailForJoin(MemberVO vo , String filename) {
+		 HtmlEmail sender = new HtmlEmail();
+		 mailSender( sender );
+
+		 try {
+			 sender.setFrom(emailUser, "스마트IoT 관리자" ); //송신인
+			 sender.addTo(vo.getEmail(), vo.getName() ); //수신인
+
+			 //제목
+			 sender.setSubject("스마트IoT 회원가입 축하");
+			 //내용
+			 StringBuffer content = new StringBuffer();
+			 content.append("<h3><a target='_blank' href='https://www.naver.com/'>스마트IoT</a></h3>")
+			 		.append("<div>[<strong>").append(vo.getName())
+							.append("</strong>]님 회원가입을 축하합니다</div>")
+					.append("<div>당신의 취업성공을 응원합니다</div>")
+			 		;
+			 sender.setHtmlMsg(content.toString() );
+			 
+			 //파일첨부하기
+			  EmailAttachment file = new EmailAttachment(); //파일첨부하기
+			  file.setPath(filename );
+			  sender.attach(file);
+			 
+			 sender.send(); //보내기
+			 
+		 }catch(Exception e) {
+			 System.out.println(e.getMessage() );
+		 }
 	}
-	
-	//임시비밀번호 이메일 보내기
+
+	// 임시비밀번호 이메일 보내기
 	public boolean emailForPassword(MemberVO vo, String pw) {
 		boolean send = true;
-		
-		
+
 		HtmlEmail sender = new HtmlEmail();
 		mailSender(sender);
-		
+
 		try {
-			sender.setFrom(emailUser, "스마트IoT 관리자"); //이메일 보내는이 정보
-			sender.addTo(vo.getEmail(), vo.getName()); //메일 수신인 정보
-			
-			sender.setSubject("스마트 IoT 임시비밀번호 발급"); //제목
-			//메일 내용
+			sender.setFrom(emailUser, "스마트IoT관리자"); // 이메일 보내는이 정보
+			sender.addTo(vo.getEmail(), vo.getName());
+
+			sender.setSubject("스마트 IoT 임시비밀번호"); // 제목
+			// 내용
 			StringBuffer content = new StringBuffer();
-			content.append("<h3>[").append(vo.getName()).append("]님 임시 비밀번호가 발급되었습니다.</h3>");
+			content.append("<h3>[").append(vo.getName()).append("]님 비밀번호가 발급되었습니다.</h3>");
 			content.append("<div>아이디: ").append(vo.getUserid()).append("</div>");
 			content.append("<div>임시 비밀번호: <strong>").append(pw).append("</strong></div>");
-			content.append("<div>발급된 임시 비밀번호로 로그인 후 비밀번호를 변경하세요</div>");
+			content.append("<div>발급된 임시 비밀번호로 로그인 후 비밀번호를 변경하세요</dic>");
 			sender.setHtmlMsg(content.toString());
-			
-			sender.send(); //보내기 버튼 클릭
-			
+
+			sender.send();// 보내기 버튼 클릭
+
 		} catch (EmailException e) {
 			send = false;
-		} 
+		}
 		return send;
 	}
-	
-	//애플리케이션 URL
+
+	// 애플리케이션 URL
 	public String appURL(HttpServletRequest request) {
 		// http://localhost:8080/smart
 		// http://127.0.0.1:80/smart
-		// http://192.168.0.10:8090/smart
+		// http://192.168.0.10:8080/smart
 		StringBuffer url = new StringBuffer("http://");
-		url.append(request.getServerName() ).append(":"); // http://localhost, http:127.0.0.1
-		url.append(request.getServerPort() ); // http://localhost:8080, http://127.0.0.1:80
-		url.append(request.getContextPath() ); // http://localhost:8080/iot, http://127.0.0.1:80/smart
+		url.append(request.getServerName()).append(":"); // http://localhost, http://127.0.0.1
+		url.append(request.getServerPort()); // http://localhost:8080
+		url.append(request.getContextPath()); // http://localhost:8080/smart
 		return url.toString();
 	}
+
 	public String appURL(HttpServletRequest request, String path) {
-		//// http://127.0.0.1:80/smart + member/naverCallback
+		// http://127.0.0.1/smart + /member/naverCallback
 		return new StringBuffer(appURL(request)).append(path).toString();
-		
+
 	}
-	
-	
-	
-	
-	
-	
-	
+
 }

@@ -11,4 +11,5 @@ public class NoticeVO {
 	private String title, content, writer, name, filename, filepath;
 	private Date writedate;
 	
+	
 }

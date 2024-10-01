@@ -12,10 +12,7 @@
 <div class="row mb-3 justify-content-between">
 	<div class="col-auto">
 	<form method="post" action="list">
-		<div class="input-group">
-			<label class="col-form-label me-3">고객명</label>
-			<input type="text" name="name" value="${name}" class="form-control">
-		</div>
+		
 		</form>
 	</div>
 
@@ -26,20 +23,25 @@
 
 <table class="table td-list">
 <colgroup>
-	<col width="200px">
-	<col width="300px">
-	<col width="300px">
-	<col width="400px">
+	<col width="100px">
+	<col width="100px">
+	<col width="100px">
+	<col width="100px">
 </colgroup>
 <tr><th>번호</th><th>질문</th><th>답변</th><th>작성일자</th></tr>
 
+<c:if test="${empty list}">
+    <tr>
+        <td colspan="4">등록된 질문이 없습니다.</td>
+    </tr>
+</c:if>
 <c:forEach items="${list }" var="vo">
 	
 <tr>
 	<td>${vo.id}</td>
-	<td><a class="text-link" href="info?id=${vo.id}"></a></td>
-	<td>${vo.question }</td>
+	<td><a class="text-link" href="info?id=${vo.id}">${vo.question }</a></td>
 	<td>${vo.answer }</td>
+	<td>${vo.writedate }</td>
 </tr>
 </c:forEach>
 </table>

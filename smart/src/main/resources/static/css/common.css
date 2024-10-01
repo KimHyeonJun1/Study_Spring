@@ -1,33 +1,41 @@
 @charset "UTF-8";
 
-body * { vertical-align: middle;}
-table {border-top: 2px solid var(--bs-gray-dark) }
-table th {background-color: var(--bs-gray-100) !important}
-table.tb-list th, table.tb-list td,
-table.tb-row th, table.tb-row td{border-right: 1px solid var(--bs-border-color);
-	padding-left: 20px !important
-	}
-table th:last-child, table td:last-child {border-right: none;}
-table.tb-list tr{ height: 45px}
-table.tb-row tr{height: 55px}
+body * { vertical-align: middle; }
+table { border-top: 2px solid var(--bs-gray-dark)  }
+table th { background-color: var(--bs-gray-100) !important }
+table.tb-list th, table.tb-list td, 
+table.tb-row th, table.tb-row td 
+{ border-right: 1px solid var(--bs-border-color);
+   padding-left: 20px !important 
+}
+table th:last-child, table td:last-child { border-right: none; }
+table.tb-list tr { height: 45px }
+table.tb-row tr { height: 55px }
 
-a:link, a:visited {text-decoration: none; color: initial;}
-.text-link:hover{text-decoration: underline; color: var( --bs-link-hover-color);}
+a:link, a:visited , .pagination a, .nav-pills a, .nav-tabs a { text-decoration: none; color: initial; }
+.text-link:hover { text-decoration: underline; color: var(--bs-link-hover-color); }
+.pagination a:not(.active):hover { cursor: pointer;}
 
-.w-px40{ width: 40px !important}
-.w-px80{ width: 80px !important}
-.w-px100{ width: 100px !important}
-.w-px150{ width: 150px !important}
-.w-px200{ width: 200px !important}
-.w-px250{ width: 250px !important}
-.w-px300{ width: 300px !important}
-.w-px500{ width: 500px !important}
 
-.profile img {width: 100%; height:100%; border-radius: 50%}
-.font-profile{height:100%; color: var(--bs-gray-500)}
-.px40{ width: 40px !important; height:40px !important}
-.px80{ width: 80px !important; height:80px !important}
+.w-px40{ width: 40px !important }
+.w-px80{ width: 80px !important }
+.w-px100{ width: 100px !important }
+.w-px150{ width: 150px !important }
+.w-px200{ width: 200px !important }
+.w-px250{ width: 250px !important }
+.w-px300{ width: 300px !important }
+.w-px500{ width: 500px !important }
 
-.date + .date-remove {position: relative; right: 33px}
+.h-px40 { height:40px !important }
+.h-px100 { height:100px !important }
+.h-px150 { height:150px !important }
+.h-px600 { height:600px !important }
+
+.profile img { width:100%; height: 100%; border-radius: 50%}
+.font-profile { height:100%; color: var(--bs-gray-500) }
+.px40 {width:40px  !important; height: 40px !important}
+.px80 {width:80px  !important; height: 80px !important}
+
+.date + .date-remove { position: relative; right : 35px }
 
 textarea.form-control { resize: none; height:250px}

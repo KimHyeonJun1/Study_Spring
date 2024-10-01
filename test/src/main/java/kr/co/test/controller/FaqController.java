@@ -37,7 +37,7 @@ public class FaqController {
 		}
 		//faq 등록 저장처리 요청
 		@PostMapping("/register")
-		public String register(FaqVO vo,  HttpServletRequest request) {
+		public String register(FaqVO vo) {
 			//화면에서 입력한 정보로 DB에 신규저장 후 목록화면으로 연결
 			mapper.registerFaq(vo);
 			return "redirect:list";

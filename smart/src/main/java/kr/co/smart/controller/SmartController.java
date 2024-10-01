@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.co.smart.member.MemberMapper;
+import kr.co.smart.member.MemberVO;
 import lombok.RequiredArgsConstructor;
 
 @Controller @RequiredArgsConstructor
@@ -14,27 +15,30 @@ public class SmartController {
 	private final MemberMapper memberMapper;
 	private final PasswordEncoder password;
 	
+	//시각화 화면 요청
+		@RequestMapping("/visual/list")
+		public String list(HttpSession session) {
+			session.setAttribute("category", "vi");
+			return "visual/list";
+		}
 	
 	@RequestMapping("/")
 	public String layout(HttpSession session) {
-		//임시 로그인해놓기 - (나중에 삭제또는 주석해놓기) -----------------------
-//		String userid = "admin";
-//		String userpw = "Admin"; //Zzzzz1
-//		//화면에서 입력한 아이디/비번이 일치하는 회원정보 조회하기
-//				MemberVO vo =  memberMapper.getOneMember(userid);
-//				boolean match = false;
-//				if(vo != null) {
-//					//해당 아이디의 회원정보가 있는 경우만 입력비번과 DB의 암호화된 비번의 일치여부 확인
-//					match = password.matches(userpw, vo.getUserpw());
-//					if( match ) {
-//						session.setAttribute("loginInfo", vo);
-//					}
-//				}
-//				//-----------------------------------------------
-				
-				
+		//임시 로그인해두기 - 나중에 삭제/주석 --------------------------------------------------------
+//		String userid = "leehaejin";
+//		String userpw = "Aaaa1";
+//		 //화면에서 입력한 아이디/비번이 일치하는 회원정보 조회하기
+//		   MemberVO vo = memberMapper.getOneMember(userid);
+//		   boolean match = false;
+//		   if(vo != null) {
+//			   //해당 아이디의 회원정보가 있는 경우만 입력 비번과 DB의 암호화 된 비번의 일치여부 확인
+//			   match = password.matches(userpw, vo.getUserpw());
+//			   if( match ) {
+//				   session.setAttribute("loginInfo", vo);
+//			   }
+//		   }
+		//---------------------------------------------------------------------------------
 		session.removeAttribute("category");
 		return "index";
 	}
-	
 }

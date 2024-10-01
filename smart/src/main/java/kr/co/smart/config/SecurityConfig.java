@@ -21,7 +21,7 @@ import kr.co.smart.remember.RememberMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Configuration //설정파일
+@Configuration //설정파일로 등록
 @EnableWebSecurity //시큐리티 활성화
 public class SecurityConfig {
 
@@ -32,20 +32,21 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFileterChain(HttpSecurity http) throws Exception {
 		
-		//고객관리, 사원관리 : 모든 접근 허용
+		//고객관리,사원관리 : 모든 접근 허용
 		//공지글, FAQ 등록 : 관리자 권한 필요
-		//답글, 방명록, 사용자관련 : 사용자 권한 필요
+		//답글, 방명록 등록, 사용자관련 : 사용자 권한 필요
 		//조회(목록,정보) : 모든 접근 허용
 		//수정/삭제 : 해당 글을 쓴 사용자만 접근 허용
+		
 		http.authorizeRequests()
 			//.antMatchers("/**").permitAll() //모든 요청에 대한 접근 허용
 			.antMatchers("/customer/**", "/hr/**").permitAll()
 			.antMatchers("/**/list", "/**/info").permitAll()
 			.antMatchers("/notice/register").hasAuthority("ADMIN")
-			.antMatchers("/**/register", "/**/user/**").hasAuthority("USER")
-			.antMatchers("/**/modify", "/**/delete").access("@accessUser.is(authentication,request)")
+			.antMatchers("/**/register", "/**/user/**/").hasAuthority("USER")
+			.antMatchers("/**/modify", "/**/delete").access("@accessUser.is(authentication, request)")
 			
 			//접근불가시 처리
 			.and()
@@ -71,24 +72,24 @@ public class SecurityConfig {
 			.and()
 			.rememberMe()
 				.key(rememberKey)
-				.tokenValiditySeconds(60*60*24*30) //30일
-				.rememberMeServices(rememberMe() )
+				.tokenValiditySeconds(60*60*24*30)
+				.rememberMeServices( rememberMe() )
 				
-				.and()
-				.oauth2Login()
-					.successHandler(loginSuccess)
-					.loginPage("/member/login")
-					.userInfoEndpoint() //로그인성공 후 사용자정보 가져오기위한 설정
-					.userService(socialService)
-					
+			.and()
+			.oauth2Login()
+				.successHandler(loginSuccess)
+				.loginPage("/member/login")
+				.userInfoEndpoint() //로그인성공 후 사용자정보 가져오기위한 설정
+				.userService(socialService)
+			
 			;
-		http.csrf().disable();//사이트간 요청 위조 방지 처리 - 비활성화
+		http.csrf() .disable();//사이트간 요청 위조 방지 처리- 비활성화
 		return http.build();
 	}
-	
 	@Bean
 	RememberService rememberMe() {
-		return new RememberService(rememberKey, userService, mapper );
+		return new RememberService(rememberKey, userService, mapper);
+		
 	}
 	
 	private final SocialUserService socialService;
@@ -97,5 +98,6 @@ public class SecurityConfig {
 	private final LoginSuccess loginSuccess;
 	private final LogoutSuccess logoutSuccess;
 	private final AccessDeny accessDeny;
+	
 	@Value("${rememberKey}") private String rememberKey;
 }
