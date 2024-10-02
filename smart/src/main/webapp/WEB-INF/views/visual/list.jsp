@@ -181,26 +181,7 @@ function lineChart(info){
 	})
 }
 
-function setOptions(title){
-	
-	return  {
-		scales: {
-		      y: {
-		        title: {
-		          color: '#000',
-		          display: true,
-		          text: title
-		        }
-		      }
-		    },
-		
-		plugins: {
-			legend: {
-				display: false, },
-		
-		},
-	}
-}
+
 
 function barChart(info){
 	//배열로 새로운 배열을 만들어내는 함수: map
@@ -332,7 +313,7 @@ function hirement_top3(){
 }
 
 $(document)
-.on("click", $(".yearpicker-items"), function(){
+.on("click", ".yearpicker-items", function(){
 	if ( $("#begin").val() > $("#end").val() ) $("#begin").val( $("#end").val())
 	
 	if( $("#top3").prop("checked") ) hirement_top3()

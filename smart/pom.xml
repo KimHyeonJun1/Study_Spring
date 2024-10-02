@@ -71,7 +71,14 @@
     <version>2.3.2</version>
     
 </dependency>
-
+	
+<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+	
+	
 <dependency>
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-classic</artifactId>

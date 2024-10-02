@@ -17,6 +17,16 @@ a:link, a:visited , .pagination a, .nav-pills a, .nav-tabs a { text-decoration: 
 .pagination a:not(.active):hover { cursor: pointer;}
 
 
+
+.notify-comment{
+	font-size: small;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+	max-height: 40px;
+/* 	desplay: */
+}
+
 .w-px40{ width: 40px !important }
 .w-px80{ width: 80px !important }
 .w-px100{ width: 100px !important }

@@ -65,6 +65,30 @@ function top3Chart(info){
 	})
 }
 
+function setOptions(title){
+	
+	return  {
+		scales: {
+		      y: {
+		        title: {
+		          color: '#000',
+		          display: true,
+		          text: title
+		        }
+		      }
+		    },
+		
+		plugins: {
+			legend: { display: false, },
+			datalabels: {
+				formatter: function(value, item){
+					return value==0 ?'': value;
+				}
+			}
+		},
+	}
+}
+
 
 function unitChart( info ){
 	info.color = info.data.map(function(data){
